@@ -99,7 +99,10 @@ fun AppToolbarPreview()
 @Composable
 fun AddButton(actions:MutableList<ToDo>)
 {
-    var nextId by remember { mutableIntStateOf(1) }
+    var nextId by remember { mutableStateOf(1) }
+
+
+
     Surface(modifier = Modifier) {
         Button(onClick = {
             actions.add(ToDo(id = nextId++, "New Action"))
@@ -118,34 +121,6 @@ fun ToDoList(actions:MutableList<ToDo>, modifier: Modifier = Modifier) {
 }
 
 
-@Composable
-fun Todo(todo:ToDo, actions: MutableList<ToDo>)
-{
-    /*val dismissState = rememberSwipeToDismissBoxState(
-        confirmStateChange = {
-            //viewModel.removeRecord(currentItem)
-            true
-        }
-    )
-
-
-    SwipeToDismissBox( state = rememberSwipeToDismissBoxState(),
-                        onDismissed = { actions.remove(todo)},
-                      contentScrimColor = Color.Red,
-                      backgroundScrimColor = Color.Red,
-                      modifier = Modifier
-                          .fillMaxWidth()
-                          .height(40.dp)) {
-        Text(todo.txt, modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(Color.White)
-            .wrapContentHeight(Alignment.CenterVertically));
-
-    }*/
-
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToDoItem(action:ToDo, actions:MutableList<ToDo>)
@@ -163,7 +138,7 @@ fun ToDoItem(action:ToDo, actions:MutableList<ToDo>)
     SwipeToDismiss(state = state,
                    background = {DismissBackground(dismissState = state)},
                    dismissContent = {ToDoContent(action = action)},
-                   directions = setOf(DismissDirection.StartToEnd))
+                   directions = setOf(DismissDirection.StartToEnd, DismissDirection.EndToStart))
 }
 
 
@@ -172,6 +147,7 @@ fun ToDoItem(action:ToDo, actions:MutableList<ToDo>)
 fun DismissBackground(dismissState:DismissState)
 {
     val color = when (dismissState.dismissDirection) {
+
         DismissDirection.StartToEnd -> Color(0xFFFF1744)
         DismissDirection.EndToStart -> Color(0xFF1DE9B6)
         null -> Color.Transparent
@@ -181,8 +157,7 @@ fun DismissBackground(dismissState:DismissState)
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(color)
-            .padding(12.dp, 2.dp),
+            .background(color),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -214,7 +189,6 @@ fun TodoBackground(state:DismissState)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(2.dp)
             .background(color = color)
     ){
         Icon(Icons.Filled.Delete, contentDescription = "Localized description")
@@ -222,23 +196,12 @@ fun TodoBackground(state:DismissState)
 }
 
 
-
-@Composable
-fun ToDoBackground()
-{
-    Surface(color = Color.Red, modifier = Modifier.fillMaxSize())
-    {
-        Icon(Icons.Filled.Delete, contentDescription = "Localized description")
-    }
-}
-
 @Composable
 fun ToDoContent(action:ToDo)
 {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,

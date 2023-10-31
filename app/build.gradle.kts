@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.testapp"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.example.testapp"
-        minSdk = 34
-        targetSdk = 34
+        minSdk = 33
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -57,34 +57,23 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.annotation:annotation:1.6.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.0")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation("androidx.activity:activity-compose:1.7.2")
+    implementation(platform("androidx.compose:compose-bom:2023.06.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3-android:1.2.0-alpha03")
+    implementation("androidx.compose.material3:material3")
+
+
+    implementation("androidx.compose.foundation:foundation")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // For Wear Material Design UX guidelines and specifications
-    implementation("androidx.wear.compose:compose-material:1.2.1")
-
-    // For integration between Wear Compose and Androidx Navigation libraries
-    implementation("androidx.wear.compose:compose-navigation:1.2.1")
-
-    // For Wear preview annotations
-    implementation("androidx.wear.compose:compose-ui-tooling:1.2.1")
-
-    // NOTE: DO NOT INCLUDE a dependency on androidx.compose.material:material.
-    // androidx.wear.compose:compose-material is designed as a replacement
-    // not an addition to androidx.compose.material:material.
-    // If there are features from that you feel are missing from
-    // androidx.wear.compose:compose-material please raise a bug to let us know.
 }
