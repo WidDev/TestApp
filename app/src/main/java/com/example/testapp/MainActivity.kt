@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -96,20 +97,36 @@ fun AppToolbarPreview()
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddButton(actions:MutableList<ToDo>)
 {
     var nextId by remember { mutableStateOf(1) }
+    var todo by remember { mutableStateOf("") }
 
+    Row(modifier = Modifier.fillMaxWidth())
+    {
 
+        TextField(shape = RoundedCornerShape(2.dp),
+            trailingIcon = {
+                Button(shape = MaterialTheme.shapes.small, onClick = {
+                    if(todo != "")
+                    {
+                        actions.add(ToDo(id = nextId++, todo))
+                        todo = ""
+                    }
 
-    Surface(modifier = Modifier) {
-        Button(onClick = {
-            actions.add(ToDo(id = nextId++, "New Action"))
-        }) {
-            Text(text = "Add Action")
-        }
+                }) {
+                    Text(text = "Add Action")
+                }
+            },
+            colors = TextFieldDefaults.colors(
+            focusedIndicatorColor =  Color.LightGray, //hide the indicator
+            unfocusedIndicatorColor = Color.Transparent),
+            value = todo,
+            onValueChange = { todo = it})
     }
+
 }
 
 @Composable
@@ -163,7 +180,9 @@ fun DismissBackground(dismissState:DismissState)
     ) {
         if (direction == DismissDirection.StartToEnd) Icon(
             Icons.Default.Delete,
-            modifier = Modifier.fillMaxHeight().background((Color.White)),
+            modifier = Modifier
+                .fillMaxHeight()
+                .background((Color.White)),
             contentDescription = "delete"
         )
         Spacer(modifier = Modifier)
