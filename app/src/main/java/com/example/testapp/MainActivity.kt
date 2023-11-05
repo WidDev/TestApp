@@ -2,7 +2,9 @@
 package com.example.testapp
 
 
+import android.app.ListActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateColorAsState
@@ -20,11 +22,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -32,6 +36,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.testapp.ui.theme.TestAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -49,36 +57,76 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column()
-                    {
-                        App(actions)
-                    }
+                    TopNav(actions = actions)
                 }
             }
         }
     }
 }
+
+
+@Composable
+fun TopNav(actions:MutableList<ToDo>)
+{
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "First"){
+        composable("First"){
+            App(actions, navController)
+        }
+        composable("Second"){
+            MainView(navController)
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App(actions:MutableList<ToDo>)
+fun App(actions:MutableList<ToDo>, navHostController: NavHostController?)
 {
+    val context = LocalContext.current
+    var showMenu by remember { mutableStateOf(false) }
+
+
+
     Column{
         TopAppBar(
             title = { Text("Simple TopAppBar") },
+
+
             navigationIcon = {
-                IconButton(onClick = { /* doSomething() */ }) {
+                IconButton(onClick = { showMenu = !showMenu }) {
                     Icon(Icons.Filled.Menu, contentDescription = null)
+                }
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Red Page") },
+                        onClick = { navHostController?.navigate("second") }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Save") },
+                        onClick = { Toast.makeText(context, "Save", Toast.LENGTH_SHORT).show(); showMenu = false }
+                    )
                 }
             },
             actions = {
+
                 // RowScope here, so these icons will be placed horizontally
                 IconButton(onClick = { /* doSomething() */ }) {
-                    Icon(Icons.Filled.MoreVert, contentDescription = "Localized description")
+                    Icon(Icons.Filled.AccountCircle, contentDescription = "Localized description")
                 }
                 IconButton(onClick = { /* doSomething() */ }) {
-                    Icon(Icons.Filled.Add, contentDescription = "Localized description")
+                    Icon(Icons.Filled.Settings, contentDescription = "Localized description")
                 }
             })
+
+
+
+
+
         AddButton(actions = actions)
         ToDoList(actions = actions)
     }
@@ -86,13 +134,13 @@ fun App(actions:MutableList<ToDo>)
 
 @Preview(showBackground = true)
 @Composable
-fun AppToolbarPreview()
+fun AppPreview()
 {
     TestAppTheme {
         var list = mutableListOf<ToDo>()
         list.add(ToDo(1, "Order groceries"))
         list.add(ToDo(2, "Call Charlie"))
-        App(list)
+        App(list, null)
     }
 }
 
@@ -240,6 +288,46 @@ fun ToDoContent(action:ToDo)
             .background(Color.White)
             .wrapContentHeight(Alignment.CenterVertically));
     }*/
+}
+
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+public fun MainView(navHostController: NavHostController?)
+{
+    val context = LocalContext.current
+    var showMenu by remember { mutableStateOf(false) }
+
+    Column{
+        TopAppBar(
+            title = { Text("Simple TopAppBar") },
+
+
+            navigationIcon = {
+                IconButton(onClick = { showMenu = !showMenu }) {
+                    Icon(Icons.Filled.Menu, contentDescription = null)
+                }
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Home") },
+                        onClick = { navHostController?.navigate("first") }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Save") },
+                        onClick = { Toast.makeText(context, "Save", Toast.LENGTH_SHORT).show(); showMenu = false }
+                    )
+                }
+            })
+
+        Surface(modifier = Modifier.fillMaxSize(), color = Color.Red) {
+            Text(text = "HELLO WORLD", modifier = Modifier.fillMaxWidth())
+        }
+    }
+
 }
 
 
