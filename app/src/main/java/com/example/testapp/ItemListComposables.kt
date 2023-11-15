@@ -97,7 +97,7 @@ fun <T:IIdentifiable> Item(item: T, items:MutableList<T>, content:@Composable (T
             items.remove(item)
             true
         } else false
-    }, positionalThreshold = { 150.dp.toPx() } )
+    }, positionalThreshold = { 150f } )
     SwipeToDismiss(state = state,
         background = { DismissBackground(dismissState = state) },
         dismissContent = { ItemContent(item = item, content) },

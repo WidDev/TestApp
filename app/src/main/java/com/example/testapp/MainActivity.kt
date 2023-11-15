@@ -3,6 +3,7 @@ package com.example.testapp
 
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import com.example.testapp.models.TeamMember
 import com.example.testapp.models.ToDo
 import com.example.testapp.ui.theme.TestAppTheme
 import com.example.testapp.viewmodels.ItemListViewModel
+import com.example.testapp.viewmodels.MainActivityViewModel
 import com.example.testapp.views.ActionsView
 import com.example.testapp.views.ApplicationHeaderWithDrawer
 import com.example.testapp.views.TeamMembersView
@@ -53,8 +55,9 @@ class MainActivity : ComponentActivity() {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App(viewModel:MainActivityViewModel = viewModel(),
+fun App(viewModel: MainActivityViewModel = viewModel(),
         todoListViewModel:ItemListViewModel<ToDo> = ItemListViewModel<ToDo>(),
         teamsListViewModel:ItemListViewModel<Team> = ItemListViewModel<Team>(),
         teamMembersListViewModel:ItemListViewModel<TeamMember> = ItemListViewModel<TeamMember>())
@@ -64,11 +67,15 @@ fun App(viewModel:MainActivityViewModel = viewModel(),
 
     Column(modifier = Modifier.fillMaxSize()) {
 
+
+
+
+
         ApplicationHeaderWithDrawer(navHostController = navController, viewModel.navigationItems )
         {
             NavHost(navController = navController, startDestination = "todo"){
                 composable("todo"){
-                    ActionsView(navController, todoListViewModel)
+                    ActionsView(navController, todoListViewModel, teamMembersListViewModel)
                 }
                 composable("teams"){
                     TeamView(navController, teamsListViewModel)
