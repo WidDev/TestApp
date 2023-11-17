@@ -1,5 +1,6 @@
 package com.example.testapp.shared
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -19,42 +20,42 @@ import com.example.testapp.interfaces.IIdentifiable
 @Composable
 fun <T>IdBasedPicklist(items:List<T>,
                        selected:T? = null,
-                       getLabel:(T)->String = {t->t.id.toString()},
-                       onSelect:(T)->Unit) where T:IIdentifiable
+                       getLabel:(T?)->String? = {t->t?.id?.toString()?:""},
+                       onSelect:(T)->Unit,
+                       placeHolderText:String = "Select") where T:IIdentifiable
 {
     var expanded by remember { mutableStateOf(false) }
 
-    Text("EXPANDED:" + expanded.toString())
-
     ExposedDropdownMenuBox(expanded = expanded,
-                            onExpandedChange = { newValue ->
+                           onExpandedChange = { newValue ->
                                 expanded = newValue
-                            }) {
+                            },
+                            modifier = Modifier.fillMaxWidth()) {
         TextField(
-            value = "",
+            value = getLabel(selected) ?: "",
             onValueChange = {},
             readOnly = true,
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
             placeholder = {
-                Text(text = "Please select your gender")
+                Text(text = placeHolderText)
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(),
-            modifier = Modifier.menuAnchor()
+            modifier = Modifier.menuAnchor().fillMaxWidth()
         )
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = {
                 expanded = false
-            }
+            },
+            modifier = Modifier.fillMaxWidth()
         ) {
             items.forEach({
-
-                DropdownMenuItem(text = {Text("HELLO")}, onClick = { onSelect(it) })
+                DropdownMenuItem(text = {Text(getLabel(it)?:"")}, onClick = { onSelect(it); expanded = false }, modifier = Modifier.fillMaxWidth())
             })
         }
-        
+
     }
-    
+
 }

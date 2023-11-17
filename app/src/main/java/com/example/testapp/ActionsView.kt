@@ -6,11 +6,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -19,10 +23,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
-import com.example.testapp.models.Team
+import com.example.testapp.ColorPicker
+import com.example.testapp.LabelledSegment
 import com.example.testapp.models.TeamMember
 import com.example.testapp.models.ToDo
 import com.example.testapp.shared.FloatingButton
@@ -39,6 +47,14 @@ public fun ActionsView(navHostController: NavHostController?,
 {
     var showCreate by remember { mutableStateOf(false) }
     val mod = Modifier
+
+    var sel:Color by remember {mutableStateOf(Color.Red)}
+    Row(modifier = Modifier.width(40.dp))
+    {
+        ColorPicker(selected = sel, onSelect = {
+            sel = it
+        })
+    }
 
 
 
@@ -79,11 +95,15 @@ fun RenderToDo(item: ToDo)
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(8.dp)
         ) {
-            Text(
-                text = "TODO",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(text = "${item.txt} ${item.id}")
+            if(item.owner != null)
+            {
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(text = "${item.txt}")
+                    Icon(imageVector = Icons.Filled.Face, contentDescription = "", tint = item.owner.color)
+                }
+            }
+
+
         }
 
     }
@@ -98,30 +118,55 @@ fun CreateDialog(visible:Boolean = false,
                  teamMembersList:ItemListViewModel<TeamMember>)
 {
     var name by remember { mutableStateOf("") }
-    var team: Team? by remember {mutableStateOf(null)}
+    var teamMember: TeamMember? by remember {mutableStateOf(null)}
 
     if(visible)
     {
-        ModalBottomSheet(onDismissRequest = onDismiss)
+        Dialog(onDismissRequest = onDismiss,
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnBackPress = true,
+            )
+        )
         {
-            Card(modifier = Modifier.fillMaxSize()) {
-
-                Row{
-                    Text("Team Member")
-                    IdBasedPicklist(items = teamMembersList.items, onSelect = {})
-                }
-                Button(onClick = {onOK(name)},
-                    shape = MaterialTheme.shapes.small)
+            Card(modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp),
+                 shape = RoundedCornerShape(16.dp)
+            ) {
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                       verticalArrangement = Arrangement.spacedBy(50.dp))
                 {
-                    Text("Add")
-                }
-                Row{
-                    Text("Name")
-                    TextField(value = name, onValueChange = { name = it })
+
+
+
+                    LabelledSegment(label = "Name", modifier = Modifier.fillMaxWidth())
+                    {
+                        TextField(value = name, onValueChange = { name = it }, modifier = Modifier.fillMaxWidth())
+                    }
+
+                    LabelledSegment(label = "Team Member") {
+                        IdBasedPicklist(selected = teamMember,
+                                        items = teamMembersList.items,
+                                        getLabel = { it -> it?.name ?: ""},
+                                        onSelect = { it -> teamMember = it})
+                    }
+
+                    Button(onClick = {onOK(name)},
+                        shape = MaterialTheme.shapes.small)
+                    {
+                        Text("Add")
+                    }
+
                 }
 
             }
+
         }
+
     }
 
 }
+

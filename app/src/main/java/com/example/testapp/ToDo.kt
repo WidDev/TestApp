@@ -7,5 +7,6 @@ import java.util.UUID
 @Serializable
 data class ToDo(
     override var id: UUID,
-    val txt:String
+    val txt:String,
+    val owner:TeamMember? = null
 ) : IIdentifiable
