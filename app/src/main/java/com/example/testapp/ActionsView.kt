@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
-import com.example.testapp.ColorPicker
 import com.example.testapp.LabelledSegment
 import com.example.testapp.models.TeamMember
 import com.example.testapp.models.ToDo
+import com.example.testapp.shared.ColorPicker
 import com.example.testapp.shared.FloatingButton
 import com.example.testapp.shared.IdBasedPicklist
 import com.example.testapp.shared.ItemList
@@ -48,13 +48,7 @@ public fun ActionsView(navHostController: NavHostController?,
     var showCreate by remember { mutableStateOf(false) }
     val mod = Modifier
 
-    var sel:Color by remember {mutableStateOf(Color.Red)}
-    Row(modifier = Modifier.width(40.dp))
-    {
-        ColorPicker(selected = sel, onSelect = {
-            sel = it
-        })
-    }
+
 
 
 
@@ -119,6 +113,7 @@ fun CreateDialog(visible:Boolean = false,
 {
     var name by remember { mutableStateOf("") }
     var teamMember: TeamMember? by remember {mutableStateOf(null)}
+    var sel: Color by remember {mutableStateOf(Color.Red)}
 
     if(visible)
     {
@@ -152,6 +147,16 @@ fun CreateDialog(visible:Boolean = false,
                                         items = teamMembersList.items,
                                         getLabel = { it -> it?.name ?: ""},
                                         onSelect = { it -> teamMember = it})
+                    }
+
+                    LabelledSegment(label = "Color") {
+                        Row(modifier = Modifier.width(40.dp))
+                        {
+                            ColorPicker(selected = sel, onSelect = {
+                                sel = it
+                            })
+                        }
+
                     }
 
                     Button(onClick = {onOK(name)},
