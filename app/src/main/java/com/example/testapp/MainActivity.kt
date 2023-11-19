@@ -3,19 +3,15 @@ package com.example.testapp
 
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,7 +30,6 @@ import com.example.testapp.views.ActionsView
 import com.example.testapp.views.ApplicationHeaderWithDrawer
 import com.example.testapp.views.TeamMembersView
 import com.example.testapp.views.TeamView
-import java.util.UUID
 
 class MainActivity : ComponentActivity() {
 
@@ -116,6 +111,7 @@ fun AppPreview()
 }
 
 
+/*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddButton(actions:MutableList<ToDo>)
@@ -148,6 +144,7 @@ fun AddButton(actions:MutableList<ToDo>)
 
 }
 
+*/
 
 
 

@@ -2,7 +2,7 @@ package com.example.testapp.services
 
 import androidx.compose.ui.graphics.Color
 import com.example.testapp.models.Team
-import java.util.UUID
+import kotlin.random.Random
 
 
 class TeamService private constructor() {
@@ -23,7 +23,7 @@ class TeamService private constructor() {
 
     public fun AddTeam(name:String, color: Color = Color.Red)
     {
-        teams.add(Team(id = UUID.randomUUID(), name = name, color = color))
+        teams.add(Team(id = Random.nextInt(), name = name, color = color))
     }
 
 

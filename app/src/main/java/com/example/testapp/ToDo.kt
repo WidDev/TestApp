@@ -1,12 +1,13 @@
 package com.example.testapp.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.example.testapp.interfaces.IIdentifiable
-import kotlinx.serialization.Serializable
-import java.util.UUID
 
-@Serializable
+@Entity(tableName="todos")
 data class ToDo(
-    override var id: UUID,
+    @PrimaryKey(autoGenerate = true)
+    override var id: Int,
     val txt:String,
-    val owner:TeamMember? = null
+    /*val owner:TeamMember? = null*/
 ) : IIdentifiable

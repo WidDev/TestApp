@@ -8,12 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -37,7 +34,7 @@ import com.example.testapp.shared.FloatingButton
 import com.example.testapp.shared.IdBasedPicklist
 import com.example.testapp.shared.ItemList
 import com.example.testapp.viewmodels.ItemListViewModel
-import java.util.UUID
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +53,7 @@ public fun ActionsView(navHostController: NavHostController?,
 
         CreateDialog(visible = showCreate,
                     onDismiss = {showCreate = false },
-                    onOK = { name:String -> listViewModel.addItem(ToDo(UUID.randomUUID(), txt = name)); showCreate = false},
+                    onOK = { name:String -> listViewModel.addItem(ToDo(Random.nextInt(), txt = name)); showCreate = false},
                     teamMembersList = teamMembersViewModel)
 
 
@@ -89,13 +86,13 @@ fun RenderToDo(item: ToDo)
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(8.dp)
         ) {
-            if(item.owner != null)
-            {
+//            if(item.owner != null)
+//            {
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(text = "${item.txt}")
-                    Icon(imageVector = Icons.Filled.Face, contentDescription = "", tint = item.owner.color)
+                    /*Icon(imageVector = Icons.Filled.Face, contentDescription = "", tint = item.owner.color)*/
                 }
-            }
+//            }
 
 
         }

@@ -41,7 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.testapp.interfaces.IIdentifiable
 import com.example.testapp.models.TeamMember
-import java.util.UUID
+import kotlin.random.Random
 
 @Composable
 fun QuickAddRow(list:MutableList<TeamMember>, addItem:(item: TeamMember) -> TeamMember)
@@ -56,7 +56,7 @@ fun QuickAddRow(list:MutableList<TeamMember>, addItem:(item: TeamMember) -> Team
                 Button(shape = MaterialTheme.shapes.small, onClick = {
                     if(txt != "")
                     {
-                        var item = TeamMember(UUID.randomUUID(), name=txt, team = null)
+                        var item = TeamMember(Random.nextInt(), name=txt, team = null)
                         addItem(item)
                         txt = ""
                     }
