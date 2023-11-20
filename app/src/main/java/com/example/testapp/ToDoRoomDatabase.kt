@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.testapp.dal.dao.TodoDao
-import com.example.testapp.models.ToDo
+import com.example.testapp.models.Todo
 
-@Database(entities = [(ToDo::class)], version = 1)
+@Database(entities = [(Todo::class)], version = 1)
 abstract class TodoRoomDatabase : RoomDatabase(){
 
 

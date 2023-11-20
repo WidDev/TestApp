@@ -2,6 +2,7 @@
 package com.example.testapp
 
 
+import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,22 +15,23 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.testapp.models.Team
 import com.example.testapp.models.TeamMember
-import com.example.testapp.models.ToDo
 import com.example.testapp.ui.theme.TestAppTheme
 import com.example.testapp.viewmodels.ItemListViewModel
 import com.example.testapp.viewmodels.MainActivityViewModel
-import com.example.testapp.views.ActionsView
 import com.example.testapp.views.ApplicationHeaderWithDrawer
 import com.example.testapp.views.TeamMembersView
 import com.example.testapp.views.TeamView
+import com.example.testapp.views.TodosView
 
 class MainActivity : ComponentActivity() {
 
@@ -42,7 +44,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    App()
+
+                    val owner = LocalViewModelStoreOwner.current
+                    owner?.let {
+                        val todosViewModel:TodosViewModel = viewModel(
+                            it,
+                            "TodosViewModel",
+                            TodosViewModelFactory(
+                                LocalContext.current.applicationContext as Application)
+                        )
+
+                        App(todosViewModel)
+                    }
+
+
                 }
             }
         }
@@ -52,13 +67,15 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App(viewModel: MainActivityViewModel = viewModel(),
-        todoListViewModel:ItemListViewModel<ToDo> = ItemListViewModel<ToDo>(),
+fun App(todoListViewModel:TodosViewModel,
+        viewModel: MainActivityViewModel = viewModel(),
         teamsListViewModel:ItemListViewModel<Team> = ItemListViewModel<Team>(),
         teamMembersListViewModel:ItemListViewModel<TeamMember> = ItemListViewModel<TeamMember>())
 {
     val context = LocalContext.current
     val navController = rememberNavController()
+
+
 
     Column(modifier = Modifier.fillMaxSize()) {
 
@@ -70,7 +87,7 @@ fun App(viewModel: MainActivityViewModel = viewModel(),
         {
             NavHost(navController = navController, startDestination = "todo"){
                 composable("todo"){
-                    ActionsView(navController, todoListViewModel, teamMembersListViewModel)
+                    TodosView(navController, todoListViewModel, teamMembersListViewModel)
                 }
                 composable("teams"){
                     TeamView(navController, teamsListViewModel)
@@ -98,15 +115,22 @@ public fun DrawerItem(icon: ImageVector, text:String)
 
 
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun AppPreview()
 {
     TestAppTheme {
-        App(MainActivityViewModel(),
-        ItemListViewModel<ToDo>(),
-        ItemListViewModel<Team>(),
+        App(ItemListViewModel<Todo>(), MainActivityViewModel(),
+        MainActivityViewModel<Team>(),
         ItemListViewModel<TeamMember>())
+    }
+}*/
+
+
+class TodosViewModelFactory(val application: Application) : ViewModelProvider.Factory{
+    override fun <T: ViewModel> create(modelClass:Class<T>) : T
+    {
+        return TodosViewModel(application) as T
     }
 }
 

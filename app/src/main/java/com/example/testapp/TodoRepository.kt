@@ -1,8 +1,9 @@
 package com.example.testapp
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.testapp.dal.dao.TodoDao
-import com.example.testapp.models.ToDo
+import com.example.testapp.models.Todo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -11,11 +12,12 @@ import kotlinx.coroutines.launch
 
 class TodoRepository(private val todoDao: TodoDao) {
 
-    val searchResults = MutableLiveData<List<ToDo>>()
+    val allTodos: LiveData<List<Todo>> = todoDao.getAllTodos()
+    val searchResults = MutableLiveData<List<Todo>>()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    fun insertTodo(todo:ToDo)
+    fun insertTodo(todo:Todo)
     {
         coroutineScope.launch(Dispatchers.IO)
         {
@@ -39,11 +41,13 @@ class TodoRepository(private val todoDao: TodoDao) {
         }
     }
 
-    private fun asyncFind(id: Int): Deferred<List<ToDo>?> =
+    private fun asyncFind(id: Int): Deferred<List<Todo>?> =
         coroutineScope.async(Dispatchers.IO)
         {
             return@async todoDao.findTodo(id)
         }
+
+
 
 
 }

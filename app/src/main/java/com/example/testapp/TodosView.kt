@@ -3,10 +3,13 @@ package com.example.testapp.views
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -16,34 +19,35 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.testapp.LabelledSegment
+import com.example.testapp.TodosViewModel
 import com.example.testapp.models.TeamMember
-import com.example.testapp.models.ToDo
+import com.example.testapp.models.Todo
 import com.example.testapp.shared.ColorPicker
 import com.example.testapp.shared.FloatingButton
 import com.example.testapp.shared.IdBasedPicklist
-import com.example.testapp.shared.ItemList
 import com.example.testapp.viewmodels.ItemListViewModel
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-public fun ActionsView(navHostController: NavHostController?,
-                       listViewModel: ItemListViewModel<ToDo>,
-                       teamMembersViewModel:ItemListViewModel<TeamMember>)
+public fun TodosView(navHostController: NavHostController?,
+                     todosViewModel: TodosViewModel,
+                     teamMembersViewModel:ItemListViewModel<TeamMember>)
 {
     var showCreate by remember { mutableStateOf(false) }
-    val mod = Modifier
+    val allTodos by todosViewModel.allTodos.observeAsState(mutableListOf())
+
 
 
 
@@ -53,12 +57,16 @@ public fun ActionsView(navHostController: NavHostController?,
 
         CreateDialog(visible = showCreate,
                     onDismiss = {showCreate = false },
-                    onOK = { name:String -> listViewModel.addItem(ToDo(Random.nextInt(), txt = name)); showCreate = false},
+                    onOK = { name:String -> todosViewModel.insertTodo(Todo(Random.nextInt(), txt = name)); showCreate = false},
                     teamMembersList = teamMembersViewModel)
 
+        LazyColumn (modifier = Modifier.fillMaxHeight())
+        {
+            items(allTodos, {it.id}) { item -> RenderToDo(item) }
+        }
 
 
-        ItemList(items = listViewModel.items, content = { RenderToDo(item = it) })
+        /*ItemList(items = allTodos, content = { RenderToDo(item = it) })*/
 
     }
 
@@ -68,15 +76,15 @@ public fun ActionsView(navHostController: NavHostController?,
     }
 }
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun ActionsViewPreview()
 {
-    ActionsView(navHostController = null, listViewModel = ItemListViewModel<ToDo>(), teamMembersViewModel = ItemListViewModel<TeamMember>())
-}
+    TodosView(navHostController = null, listViewModel = ItemListViewModel<Todo>(), teamMembersViewModel = ItemListViewModel<TeamMember>())
+}*/
 
 @Composable
-fun RenderToDo(item: ToDo)
+fun RenderToDo(item: Todo)
 {
     Card(
         modifier = Modifier

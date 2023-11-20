@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.example.testapp.interfaces.IIdentifiable
 
 @Entity(tableName="todos")
-data class ToDo(
+data class Todo(
     @PrimaryKey(autoGenerate = true)
     override var id: Int,
     val txt:String,
