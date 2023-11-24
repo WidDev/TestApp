@@ -64,7 +64,7 @@ public fun TodosView(navHostController: NavHostController?,
         }
 
 */
-        var list = allTodos.toMutableList()
+        var list = allTodos.sortedByDescending { todo -> todo.id }.toMutableList()
         ItemList(items = list, content = { RenderToDo(item = it) }, onDelete = {it -> todosViewModel.deleteTodo(it)})
 
     }

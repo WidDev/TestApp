@@ -10,9 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class BaseRepository<T:IIdentifiable>(private val dao: BaseDao<T>) {
+open class BaseRepository<T:IIdentifiable>(private val dao: BaseDao<T>) {
 
-    val allTodos: LiveData<List<T>> = dao.getAll()
+    val allItems: LiveData<List<T>> = dao.getAll()
     val searchResults = MutableLiveData<List<T>>()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
@@ -47,6 +47,12 @@ class BaseRepository<T:IIdentifiable>(private val dao: BaseDao<T>) {
             return@async dao.find(id)
         }
 
+    fun deleteAll() {
+        coroutineScope.launch(Dispatchers.IO)
+        {
+            dao.deleteAll()
+        }
+    }
 
 
 

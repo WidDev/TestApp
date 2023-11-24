@@ -20,23 +20,23 @@ class TodosViewModel(application: Application) : ViewModel() {
         val todoDao = todoDb.TodoDao()
         repository = TodoRepository(todoDao)
 
-        allTodos = repository.allTodos
+        allTodos = repository.allItems
         searchResults = repository.searchResults
     }
 
     fun insertTodo(todo:Todo)
     {
-        repository.insertTodo(todo)
+        repository.insert(todo)
     }
 
     fun findTodo(id:Int)
     {
-        repository.findTodo(id)
+        repository.find(id)
     }
 
     fun deleteTodo(todo:Todo)
     {
-        repository.deleteTodo(todo)
+        repository.delete(todo)
     }
 
     fun deleteAll()

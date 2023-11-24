@@ -11,12 +11,12 @@ import com.example.testapp.repositories.BaseRepository
 class BaseViewModel<T:IIdentifiable, D>(val roomDatabase:RoomDatabase, val dao: BaseDao<T>, val repository: BaseRepository<T>) : ViewModel() {
 
 
-    val allTodos: LiveData<List<T>>
+    val allItems: LiveData<List<T>>
     val searchResults: MutableLiveData<List<T>>
 
 
     init {
-        allTodos = repository.allTodos
+        allItems = repository.allItems
         searchResults = repository.searchResults
     }
 
