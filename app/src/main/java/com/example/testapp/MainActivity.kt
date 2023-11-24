@@ -47,13 +47,12 @@ class MainActivity : ComponentActivity() {
 
                     val owner = LocalViewModelStoreOwner.current
                     owner?.let {
-                        val todosViewModel: TodosViewModel = viewModel(
-                            it,
-                            "TodosViewModel",
-                            TodosViewModelFactory(
-                                LocalContext.current.applicationContext as Application)
-                        )
 
+                        val app = LocalContext.current.applicationContext as Application
+
+                        val todosViewModel:TodosViewModel = viewModel(it,"TodosViewModel",ViewModelFactory(app, { app -> TodosViewModel(app)}))
+
+                        //val teamsViewModel:TeamsViewModel = viewModel(it,"TeamsViewModel",ViewModelFactory(app, { app -> TeamsViewModel(app)}))
                         App(todosViewModel)
                     }
 
@@ -63,6 +62,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+class ViewModelFactory<T>(val application: Application, val factory:(app:Application) -> T) : ViewModelProvider.Factory{
+    override fun <T: ViewModel> create(modelClass:Class<T>) : T
+    {
+        return factory(application) as T
+    }
+}
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -127,12 +134,7 @@ fun AppPreview()
 }*/
 
 
-class TodosViewModelFactory(val application: Application) : ViewModelProvider.Factory{
-    override fun <T: ViewModel> create(modelClass:Class<T>) : T
-    {
-        return TodosViewModel(application) as T
-    }
-}
+
 
 
 /*
