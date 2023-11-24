@@ -7,7 +7,7 @@ import com.example.testapp.interfaces.IIdentifiable
 @Entity(tableName="todos")
 data class Todo(
     @PrimaryKey(autoGenerate = true)
-    override var id: Int,
+    override var id: Int = 0,
     val txt:String,
     /*val owner:TeamMember? = null*/
 ) : IIdentifiable

@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
 
                     val owner = LocalViewModelStoreOwner.current
                     owner?.let {
-                        val todosViewModel:TodosViewModel = viewModel(
+                        val todosViewModel: TodosViewModel = viewModel(
                             it,
                             "TodosViewModel",
                             TodosViewModelFactory(

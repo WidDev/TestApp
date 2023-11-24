@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.testapp.database.TodoRoomDatabase
 import com.example.testapp.models.Todo
+import com.example.testapp.repositories.TodoRepository
 
 class TodosViewModel(application: Application) : ViewModel() {
 
@@ -32,9 +34,15 @@ class TodosViewModel(application: Application) : ViewModel() {
         repository.findTodo(id)
     }
 
-    fun deleteTodo(id:Int)
+    fun deleteTodo(todo:Todo)
     {
-        repository.deleteTodo(id)
+        repository.deleteTodo(todo)
     }
+
+    fun deleteAll()
+    {
+        repository.deleteAll();
+    }
+
 
 }

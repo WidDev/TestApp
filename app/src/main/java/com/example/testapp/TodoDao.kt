@@ -2,23 +2,20 @@ package com.example.testapp.dal.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
+import com.example.testapp.dal.BaseDao
 import com.example.testapp.models.Todo
 
 @Dao
-interface TodoDao {
-
-    @Insert
-    fun insertTodo(todo: Todo)
+interface TodoDao : BaseDao<Todo> {
 
     @Query("SELECT * FROM todos WHERE id = :id")
-    fun findTodo(id: Int): List<Todo>
+    override fun find(id: Int): List<Todo>
 
-    @Query("DELETE FROM todos WHERE id = :id")
-    fun deleteTodo(id:Int)
+    @Query("SELECT * FROM todos order by id asc")
+    override fun getAll() : LiveData<List<Todo>>
 
-    @Query("SELECT * FROM todos")
-    fun getAllTodos() : LiveData<List<Todo>>
+    @Query("DELETE from todos")
+    override fun deleteAll() : Unit
 
 }

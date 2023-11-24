@@ -3,13 +3,10 @@ package com.example.testapp.views
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -29,15 +26,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
-import com.example.testapp.LabelledSegment
 import com.example.testapp.TodosViewModel
 import com.example.testapp.models.TeamMember
 import com.example.testapp.models.Todo
 import com.example.testapp.shared.ColorPicker
 import com.example.testapp.shared.FloatingButton
 import com.example.testapp.shared.IdBasedPicklist
+import com.example.testapp.shared.ItemList
+import com.example.testapp.shared.LabelledSegment
 import com.example.testapp.viewmodels.ItemListViewModel
-import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,23 +54,28 @@ public fun TodosView(navHostController: NavHostController?,
 
         CreateDialog(visible = showCreate,
                     onDismiss = {showCreate = false },
-                    onOK = { name:String -> todosViewModel.insertTodo(Todo(Random.nextInt(), txt = name)); showCreate = false},
+                    onOK = { name:String -> todosViewModel.insertTodo(Todo(txt = name)); showCreate = false},
                     teamMembersList = teamMembersViewModel)
 
-        LazyColumn (modifier = Modifier.fillMaxHeight())
+        /*LazyColumn (modifier = Modifier.fillMaxHeight())
         {
-            items(allTodos, {it.id}) { item -> RenderToDo(item) }
+
+            items(allTodos.sortedByDescending { it.id }, {it.id}) { item -> RenderToDo(item) }
         }
 
-
-        /*ItemList(items = allTodos, content = { RenderToDo(item = it) })*/
+*/
+        var list = allTodos.toMutableList()
+        ItemList(items = list, content = { RenderToDo(item = it) }, onDelete = {it -> todosViewModel.deleteTodo(it)})
 
     }
 
 
-    FloatingButton {
+    FloatingButton(text="Add") {
         showCreate = true
     }
+    /*FloatingButton(text="Clear", modifier = Modifier.padding(horizontal=70.dp)) {
+        todosViewModel.deleteAll()
+    }*/
 }
 
 /*@Preview(showBackground = true)
@@ -88,7 +90,8 @@ fun RenderToDo(item: Todo)
 {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().
+            padding(5.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -97,7 +100,7 @@ fun RenderToDo(item: Todo)
 //            if(item.owner != null)
 //            {
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(text = "${item.txt}")
+                    Text(text = "${item.txt} ${item.id}")
                     /*Icon(imageVector = Icons.Filled.Face, contentDescription = "", tint = item.owner.color)*/
                 }
 //            }

@@ -77,24 +77,25 @@ fun QuickAddRow(list:MutableList<TeamMember>, addItem:(item: TeamMember) -> Team
 @Composable
 fun <T:IIdentifiable> ItemList(items:MutableList<T>,
                                content:@Composable (T)->Unit,
-                               modifier: Modifier = Modifier)
+                               modifier: Modifier = Modifier,
+                               onDelete:(T)->Unit = {})
 {
     LazyColumn (modifier = Modifier.fillMaxHeight())
     {
-        items(items, {it.id}) { item -> Item(item, items, content) }
+        items(items, {it.id}) { item -> Item(item, items, content, onDelete) }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T:IIdentifiable> Item(item: T, items:MutableList<T>, content:@Composable (T)->Unit)
+fun <T:IIdentifiable> Item(item: T, items:MutableList<T>, content:@Composable (T)->Unit, onDelete:(T) -> Unit)
 {
     val context = LocalContext.current
     var show by remember { mutableStateOf(true) }
     val currentItem by rememberUpdatedState(item)
     var state = rememberDismissState(confirmValueChange = {
         if (it == DismissValue.DismissedToStart || it == DismissValue.DismissedToEnd) {
-            items.remove(item)
+            onDelete(item)
             true
         } else false
     }, positionalThreshold = { 150f } )
@@ -109,6 +110,7 @@ fun <T> ItemContent(item: T, content:@Composable (T)->Unit)
 {
     Card(
         modifier = Modifier
+            .padding(5.dp)
             .fillMaxWidth()
     ) {
         Column(
@@ -126,8 +128,8 @@ fun DismissBackground(dismissState: DismissState)
 {
     val color = when (dismissState.dismissDirection) {
 
-        DismissDirection.StartToEnd -> Color(0xFFFF1744)
-        DismissDirection.EndToStart -> Color(0xFF1DE9B6)
+        DismissDirection.StartToEnd -> Color(0xFFBB2C2C)
+        DismissDirection.EndToStart -> Color(0xFF1DE93F)
         null -> Color.Transparent
     }
     val direction = dismissState.dismissDirection

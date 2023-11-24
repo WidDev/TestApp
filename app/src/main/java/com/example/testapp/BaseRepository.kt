@@ -2,38 +2,38 @@ package com.example.testapp.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.testapp.dal.dao.TodoDao
-import com.example.testapp.models.Todo
+import com.example.testapp.dal.BaseDao
+import com.example.testapp.interfaces.IIdentifiable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class TodoRepository(private val todoDao: TodoDao) {
+class BaseRepository<T:IIdentifiable>(private val dao: BaseDao<T>) {
 
-    val allTodos: LiveData<List<Todo>> = todoDao.getAll()
-    val searchResults = MutableLiveData<List<Todo>>()
+    val allTodos: LiveData<List<T>> = dao.getAll()
+    val searchResults = MutableLiveData<List<T>>()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    fun insertTodo(todo:Todo)
+    fun insert(item:T)
     {
         coroutineScope.launch(Dispatchers.IO)
         {
-            todoDao.insert(todo)
+            dao.insert(item)
         }
     }
 
-    fun deleteTodo(todo:Todo)
+    fun delete(item:T)
     {
         coroutineScope.launch(Dispatchers.IO)
         {
-            todoDao.delete(todo)
+            dao.delete(item)
         }
     }
 
-    fun findTodo(id:Int)
+    fun find(id:Int)
     {
         coroutineScope.launch(Dispatchers.IO)
         {
@@ -41,18 +41,13 @@ class TodoRepository(private val todoDao: TodoDao) {
         }
     }
 
-    private fun asyncFind(id: Int): Deferred<List<Todo>?> =
+    private fun asyncFind(id: Int): Deferred<List<T>?> =
         coroutineScope.async(Dispatchers.IO)
         {
-            return@async todoDao.find(id)
+            return@async dao.find(id)
         }
 
-    fun deleteAll() {
-        coroutineScope.launch(Dispatchers.IO)
-        {
-            todoDao.deleteAll()
-        }
-    }
+
 
 
 }
