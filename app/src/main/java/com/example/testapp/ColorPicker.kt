@@ -17,14 +17,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color as JColor
 
-fun Color.Companion.fromHex(color: String) = Color(android.graphics.Color.parseColor("#" + color))
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ColorPicker(selected:Color, onSelect:(col:Color) -> Unit)
+fun ColorPicker(selected:Int, onSelect:(col:Int) -> Unit)
 {
 
     var expanded by remember { mutableStateOf(false) }
@@ -54,8 +54,12 @@ fun ColorPicker(selected:Color, onSelect:(col:Color) -> Unit)
 
 
     Column{
+
     Row(modifier = Modifier.fillMaxWidth().padding(5.dp).clickable { expanded = true }) {
-        Box(modifier = Modifier.fillMaxWidth().background(selected).height(30.dp))
+
+        val col = androidx.compose.ui.graphics.Color(selected)
+
+        Box(modifier = Modifier.fillMaxWidth().background(col).height(30.dp))
     }
     DropdownMenu(expanded = expanded,
                  onDismissRequest = { expanded = false }) {
@@ -69,8 +73,8 @@ fun ColorPicker(selected:Color, onSelect:(col:Color) -> Unit)
                 {
                     (0..colCount).forEach()
                     {
-                        val color = if(index < cols.count()) Color(cols[index]) else Color.White
-                        Box(modifier = Modifier.padding(2.dp).size(30.dp).background(color).clickable { onSelect(color); expanded = false })
+                        val color = if(index < cols.count()) JColor(cols[index]) else JColor.White
+                        Box(modifier = Modifier.padding(2.dp).size(30.dp).background(color).clickable { onSelect(color.toArgb()); expanded = false })
                         index += 1
                     }
 

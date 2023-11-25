@@ -1,6 +1,7 @@
 package com.example.testapp.services
 
-import androidx.compose.ui.graphics.Color
+
+import android.graphics.Color
 import com.example.testapp.models.Team
 import kotlin.random.Random
 
@@ -21,7 +22,7 @@ class TeamService private constructor() {
 
     private var teams:MutableList<Team> = mutableListOf<Team>()
 
-    public fun AddTeam(name:String, color: Color = Color.Red)
+    public fun AddTeam(name:String, color: Int = Color.DKGRAY)
     {
         teams.add(Team(id = Random.nextInt(), name = name, color = color))
     }

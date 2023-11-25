@@ -1,5 +1,6 @@
 package com.example.testapp.views
 
+import android.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,12 +22,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
-import com.example.testapp.TodosViewModel
 import com.example.testapp.models.TeamMember
 import com.example.testapp.models.Todo
 import com.example.testapp.shared.ColorPicker
@@ -35,6 +34,7 @@ import com.example.testapp.shared.IdBasedPicklist
 import com.example.testapp.shared.ItemList
 import com.example.testapp.shared.LabelledSegment
 import com.example.testapp.viewmodels.ItemListViewModel
+import com.example.testapp.viewmodels.TodosViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -121,7 +121,7 @@ fun CreateDialog(visible:Boolean = false,
 {
     var name by remember { mutableStateOf("") }
     var teamMember: TeamMember? by remember {mutableStateOf(null)}
-    var sel: Color by remember {mutableStateOf(Color.Red)}
+    var sel: Int by remember {mutableStateOf(Color.BLUE)}
 
     if(visible)
     {
@@ -143,7 +143,7 @@ fun CreateDialog(visible:Boolean = false,
                        verticalArrangement = Arrangement.spacedBy(50.dp))
                 {
 
-
+    Text("Selected ${sel}")
 
                     LabelledSegment(label = "Name", modifier = Modifier.fillMaxWidth())
                     {

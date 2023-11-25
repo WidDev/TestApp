@@ -28,6 +28,7 @@ import com.example.testapp.models.TeamMember
 import com.example.testapp.ui.theme.TestAppTheme
 import com.example.testapp.viewmodels.ItemListViewModel
 import com.example.testapp.viewmodels.MainActivityViewModel
+import com.example.testapp.viewmodels.TodosViewModel
 import com.example.testapp.views.ApplicationHeaderWithDrawer
 import com.example.testapp.views.TeamMembersView
 import com.example.testapp.views.TeamView
@@ -50,9 +51,12 @@ class MainActivity : ComponentActivity() {
 
                         val app = LocalContext.current.applicationContext as Application
 
-                        val todosViewModel:TodosViewModel = viewModel(it,"TodosViewModel",ViewModelFactory(app, { app -> TodosViewModel(app)}))
+                        val todosViewModel: TodosViewModel = viewModel(it,"TodosViewModel",ViewModelFactory(app, { app -> TodosViewModel(app)}))
 
-                        //val teamsViewModel:TeamsViewModel = viewModel(it,"TeamsViewModel",ViewModelFactory(app, { app -> TeamsViewModel(app)}))
+                        /*val teamsViewModel: BaseViewModel<Team, BaseDao<Team>> = viewModel(
+                            it,
+                            "TeamsViewModel",
+                            ViewModelFactory(app, { app -> BaseViewModel<Team, BaseDao<Team>>(app)}))*/
                         App(todosViewModel)
                     }
 
