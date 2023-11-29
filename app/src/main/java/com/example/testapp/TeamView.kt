@@ -11,7 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
-import com.example.testapp.models.Team
+import com.example.testapp.dal.entities.Team
 import com.example.testapp.shared.ItemList
 import com.example.testapp.viewmodels.ItemListViewModel
 

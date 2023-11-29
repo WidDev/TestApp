@@ -6,7 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.example.testapp.models.TeamMember
+import com.example.testapp.dal.entities.TeamMember
 import com.example.testapp.shared.ItemList
 import com.example.testapp.shared.QuickAddRow
 import com.example.testapp.viewmodels.ItemListViewModel

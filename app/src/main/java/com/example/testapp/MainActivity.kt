@@ -23,8 +23,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.testapp.models.Team
-import com.example.testapp.models.TeamMember
+import com.example.testapp.dal.entities.Team
+import com.example.testapp.dal.entities.TeamMember
 import com.example.testapp.ui.theme.TestAppTheme
 import com.example.testapp.viewmodels.ItemListViewModel
 import com.example.testapp.viewmodels.MainActivityViewModel
@@ -53,10 +53,7 @@ class MainActivity : ComponentActivity() {
 
                         val todosViewModel: TodosViewModel = viewModel(it,"TodosViewModel",ViewModelFactory(app, { app -> TodosViewModel(app)}))
 
-                        /*val teamsViewModel: BaseViewModel<Team, BaseDao<Team>> = viewModel(
-                            it,
-                            "TeamsViewModel",
-                            ViewModelFactory(app, { app -> BaseViewModel<Team, BaseDao<Team>>(app)}))*/
+
                         App(todosViewModel)
                     }
 

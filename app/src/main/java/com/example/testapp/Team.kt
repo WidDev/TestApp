@@ -1,6 +1,5 @@
-package com.example.testapp.models
+package com.example.testapp.dal.entities
 
-import android.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.testapp.interfaces.IIdentifiable

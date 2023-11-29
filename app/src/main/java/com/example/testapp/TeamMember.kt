@@ -1,4 +1,4 @@
-package com.example.testapp.models
+package com.example.testapp.dal.entities
 
 import android.graphics.Color
 import androidx.room.Entity
@@ -10,6 +10,5 @@ data class TeamMember(
     @PrimaryKey(autoGenerate = true)
     override public val id: Int,
     public var name:String,
-    public var team:Team?,
     public var color: Int = Color.DKGRAY
 ) : IIdentifiable

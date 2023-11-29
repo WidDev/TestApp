@@ -2,7 +2,7 @@ package com.example.testapp.services
 
 
 import android.graphics.Color
-import com.example.testapp.models.Team
+import com.example.testapp.dal.entities.Team
 import kotlin.random.Random
 
 

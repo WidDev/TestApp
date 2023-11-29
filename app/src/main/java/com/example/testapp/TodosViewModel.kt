@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.testapp.database.TodoRoomDatabase
-import com.example.testapp.models.Todo
+import com.example.testapp.dal.entities.Todo
+import com.example.testapp.database.ApplicationDatabase
 import com.example.testapp.repositories.TodoRepository
 
 class TodosViewModel(application: Application) : ViewModel() {
@@ -16,7 +16,7 @@ class TodosViewModel(application: Application) : ViewModel() {
     val searchResults: MutableLiveData<List<Todo>>
 
     init {
-        val todoDb = TodoRoomDatabase.getInstance(application)
+        val todoDb = ApplicationDatabase.getInstance(application)
         val todoDao = todoDb.TodoDao()
         repository = TodoRepository(todoDao)
 

@@ -6,12 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.testapp.dal.dao.TeamDao
 import com.example.testapp.dal.dao.TodoDao
-import com.example.testapp.models.Team
-import com.example.testapp.models.Todo
+import com.example.testapp.dal.entities.Team
+import com.example.testapp.dal.entities.TeamMember
+import com.example.testapp.dal.entities.Todo
+
 
 //@TypeConverters(ColorConverter::class)
-@Database(entities = [(Todo::class), (Team::class)], version = 2)
-abstract class TodoRoomDatabase : RoomDatabase(){
+@Database(entities = [(Todo::class), (Team::class), (TeamMember::class)], version = 3)
+abstract class ApplicationDatabase : RoomDatabase(){
 
 
     abstract fun TodoDao() : TodoDao
@@ -19,9 +21,9 @@ abstract class TodoRoomDatabase : RoomDatabase(){
 
     companion object {
 
-        private var INSTANCE: TodoRoomDatabase? = null
+        private var INSTANCE: ApplicationDatabase? = null
 
-        fun getInstance(context: Context): TodoRoomDatabase
+        fun getInstance(context: Context): ApplicationDatabase
         {
             synchronized(this)
             {
@@ -30,7 +32,7 @@ abstract class TodoRoomDatabase : RoomDatabase(){
                 if(instance == null)
                 {
                     instance = Room.databaseBuilder(context.applicationContext,
-                            TodoRoomDatabase::class.java,
+                            ApplicationDatabase::class.java,
                         "todo_database").fallbackToDestructiveMigration().build()
                 }
 

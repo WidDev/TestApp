@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import com.example.testapp.dal.BaseDao
-import com.example.testapp.models.Team
+import com.example.testapp.dal.entities.Team
 
 @Dao()
 interface TeamDao : BaseDao<Team> {

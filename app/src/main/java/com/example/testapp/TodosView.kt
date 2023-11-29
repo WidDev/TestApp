@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
-import com.example.testapp.models.TeamMember
-import com.example.testapp.models.Todo
+import com.example.testapp.dal.entities.TeamMember
+import com.example.testapp.dal.entities.Todo
 import com.example.testapp.shared.ColorPicker
 import com.example.testapp.shared.FloatingButton
 import com.example.testapp.shared.IdBasedPicklist
@@ -56,14 +56,6 @@ public fun TodosView(navHostController: NavHostController?,
                     onDismiss = {showCreate = false },
                     onOK = { name:String -> todosViewModel.insertTodo(Todo(txt = name)); showCreate = false},
                     teamMembersList = teamMembersViewModel)
-
-        /*LazyColumn (modifier = Modifier.fillMaxHeight())
-        {
-
-            items(allTodos.sortedByDescending { it.id }, {it.id}) { item -> RenderToDo(item) }
-        }
-
-*/
         var list = allTodos.sortedByDescending { todo -> todo.id }.toMutableList()
         ItemList(items = list, content = { RenderToDo(item = it) }, onDelete = {it -> todosViewModel.deleteTodo(it)})
 
