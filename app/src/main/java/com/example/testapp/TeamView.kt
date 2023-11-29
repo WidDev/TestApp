@@ -12,12 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.example.testapp.dal.entities.Team
-import com.example.testapp.shared.ItemList
-import com.example.testapp.viewmodels.ItemListViewModel
+import com.example.testapp.viewmodels.TeamsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-public fun TeamView(navHostController:NavHostController, teamListViewModel:ItemListViewModel<Team>) {
+public fun TeamView(navHostController:NavHostController, teamsViewModel: TeamsViewModel) {
 
     var showCreate by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf("") }
@@ -30,7 +29,7 @@ public fun TeamView(navHostController:NavHostController, teamListViewModel:ItemL
         {
             Text("Press")
         }
-        ItemList(items = teamListViewModel.items, content = { RenderTeam(item = it)})
+        /*ItemList(items = teamListViewModel.items, content = { RenderTeam(item = it)})*/
 
     }
 

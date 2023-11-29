@@ -23,11 +23,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.testapp.dal.entities.Team
 import com.example.testapp.dal.entities.TeamMember
 import com.example.testapp.ui.theme.TestAppTheme
 import com.example.testapp.viewmodels.ItemListViewModel
 import com.example.testapp.viewmodels.MainActivityViewModel
+import com.example.testapp.viewmodels.TeamsViewModel
 import com.example.testapp.viewmodels.TodosViewModel
 import com.example.testapp.views.ApplicationHeaderWithDrawer
 import com.example.testapp.views.TeamMembersView
@@ -52,9 +52,10 @@ class MainActivity : ComponentActivity() {
                         val app = LocalContext.current.applicationContext as Application
 
                         val todosViewModel: TodosViewModel = viewModel(it,"TodosViewModel",ViewModelFactory(app, { app -> TodosViewModel(app)}))
+                        val teamsViewModel: TeamsViewModel = viewModel(it,"TeamsViewModel",ViewModelFactory(app, { app -> TeamsViewModel(app)}))
 
 
-                        App(todosViewModel)
+                        App(todosViewModel, teamsViewModel)
                     }
 
 
@@ -76,8 +77,8 @@ class ViewModelFactory<T>(val application: Application, val factory:(app:Applica
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun App(todoListViewModel:TodosViewModel,
+        teamsViewModel:TeamsViewModel,
         viewModel: MainActivityViewModel = viewModel(),
-        teamsListViewModel:ItemListViewModel<Team> = ItemListViewModel<Team>(),
         teamMembersListViewModel:ItemListViewModel<TeamMember> = ItemListViewModel<TeamMember>())
 {
     val context = LocalContext.current
@@ -98,7 +99,7 @@ fun App(todoListViewModel:TodosViewModel,
                     TodosView(navController, todoListViewModel, teamMembersListViewModel)
                 }
                 composable("teams"){
-                    TeamView(navController, teamsListViewModel)
+                    TeamView(navController, teamsViewModel)
                 }
                 composable("people"){
                     TeamMembersView(navController, teamMembersListViewModel)
