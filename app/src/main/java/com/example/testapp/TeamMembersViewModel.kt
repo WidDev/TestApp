@@ -4,26 +4,26 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.testapp.dal.entities.Team
+import com.example.testapp.dal.entities.TeamMember
 import com.example.testapp.database.ApplicationDatabase
-import com.example.testapp.repositories.TeamRepository
+import com.example.testapp.repositories.TeamMemberRepository
 
-class TeamsViewModel(application:Application) : ViewModel() {
+class TeamMembersViewModel(application: Application) : ViewModel() {
 
-    val allItems: LiveData<List<Team>>
-    private val repository: TeamRepository
-    val searchResults: MutableLiveData<List<Team>>
+    val allItems: LiveData<List<TeamMember>>
+    private val repository: TeamMemberRepository
+    val searchResults: MutableLiveData<List<TeamMember>>
 
     init {
         val db = ApplicationDatabase.getInstance(application)
-        val dao = db.TeamDao()
-        repository = TeamRepository(dao)
+        val dao = db.TeamMemberDao()
+        repository = TeamMemberRepository(dao)
 
         allItems = repository.allItems
         searchResults = repository.searchResults
     }
 
-    fun insert(item: Team)
+    fun insert(item: TeamMember)
     {
         repository.insert(item)
     }
@@ -33,7 +33,7 @@ class TeamsViewModel(application:Application) : ViewModel() {
         repository.find(id)
     }
 
-    fun delete(item: Team)
+    fun delete(item: TeamMember)
     {
         repository.delete(item)
     }

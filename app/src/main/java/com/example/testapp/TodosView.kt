@@ -33,14 +33,14 @@ import com.example.testapp.shared.FloatingButton
 import com.example.testapp.shared.IdBasedPicklist
 import com.example.testapp.shared.ItemList
 import com.example.testapp.shared.LabelledSegment
-import com.example.testapp.viewmodels.ItemListViewModel
+import com.example.testapp.viewmodels.TeamMembersViewModel
 import com.example.testapp.viewmodels.TodosViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 public fun TodosView(navHostController: NavHostController?,
                      todosViewModel: TodosViewModel,
-                     teamMembersViewModel:ItemListViewModel<TeamMember>)
+                     teamMembersViewModel:TeamMembersViewModel)
 {
     var showCreate by remember { mutableStateOf(false) }
     val allTodos by todosViewModel.allTodos.observeAsState(mutableListOf())
@@ -109,7 +109,7 @@ fun RenderToDo(item: Todo)
 fun CreateDialog(visible:Boolean = false,
                  onDismiss: () -> Unit = {},
                  onOK:(str:String) -> Unit = {},
-                 teamMembersList:ItemListViewModel<TeamMember>)
+                 teamMembersList:TeamMembersViewModel)
 {
     var name by remember { mutableStateOf("") }
     var teamMember: TeamMember? by remember {mutableStateOf(null)}
@@ -142,9 +142,11 @@ fun CreateDialog(visible:Boolean = false,
                         TextField(value = name, onValueChange = { name = it }, modifier = Modifier.fillMaxWidth())
                     }
 
+                    val teamMembers:List<TeamMember> = teamMembersList.allItems.value ?: listOf()
+
                     LabelledSegment(label = "Team Member") {
-                        IdBasedPicklist(selected = teamMember,
-                                        items = teamMembersList.items,
+                        IdBasedPicklist<TeamMember>(selected = teamMember,
+                                        items = teamMembers,
                                         getLabel = { it -> it?.name ?: ""},
                                         onSelect = { it -> teamMember = it})
                     }

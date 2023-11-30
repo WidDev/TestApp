@@ -23,10 +23,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.testapp.dal.entities.TeamMember
 import com.example.testapp.ui.theme.TestAppTheme
-import com.example.testapp.viewmodels.ItemListViewModel
 import com.example.testapp.viewmodels.MainActivityViewModel
+import com.example.testapp.viewmodels.TeamMembersViewModel
 import com.example.testapp.viewmodels.TeamsViewModel
 import com.example.testapp.viewmodels.TodosViewModel
 import com.example.testapp.views.ApplicationHeaderWithDrawer
@@ -53,9 +52,9 @@ class MainActivity : ComponentActivity() {
 
                         val todosViewModel: TodosViewModel = viewModel(it,"TodosViewModel",ViewModelFactory(app, { app -> TodosViewModel(app)}))
                         val teamsViewModel: TeamsViewModel = viewModel(it,"TeamsViewModel",ViewModelFactory(app, { app -> TeamsViewModel(app)}))
+                        val teamMembersViewModel: TeamMembersViewModel = viewModel(it,"TeamMembersViewModel",ViewModelFactory(app, { app -> TeamMembersViewModel(app)}))
 
-
-                        App(todosViewModel, teamsViewModel)
+                        App(todosViewModel, teamsViewModel, teamMembersViewModel)
                     }
 
 
@@ -78,8 +77,8 @@ class ViewModelFactory<T>(val application: Application, val factory:(app:Applica
 @Composable
 fun App(todoListViewModel:TodosViewModel,
         teamsViewModel:TeamsViewModel,
-        viewModel: MainActivityViewModel = viewModel(),
-        teamMembersListViewModel:ItemListViewModel<TeamMember> = ItemListViewModel<TeamMember>())
+        teamMembersViewModel:TeamMembersViewModel,
+        viewModel: MainActivityViewModel = viewModel())
 {
     val context = LocalContext.current
     val navController = rememberNavController()
@@ -89,20 +88,17 @@ fun App(todoListViewModel:TodosViewModel,
     Column(modifier = Modifier.fillMaxSize()) {
 
 
-
-
-
         ApplicationHeaderWithDrawer(navHostController = navController, viewModel.navigationItems )
         {
             NavHost(navController = navController, startDestination = "todo"){
                 composable("todo"){
-                    TodosView(navController, todoListViewModel, teamMembersListViewModel)
+                    TodosView(navController, todoListViewModel, teamMembersViewModel)
                 }
                 composable("teams"){
                     TeamView(navController, teamsViewModel)
                 }
                 composable("people"){
-                    TeamMembersView(navController, teamMembersListViewModel)
+                    TeamMembersView(navController, teamMembersViewModel)
                 }
             }
         }

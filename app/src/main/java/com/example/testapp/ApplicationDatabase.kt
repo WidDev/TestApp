@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.testapp.dal.dao.TeamDao
+import com.example.testapp.dal.dao.TeamMemberDao
 import com.example.testapp.dal.dao.TodoDao
 import com.example.testapp.dal.entities.Team
 import com.example.testapp.dal.entities.TeamMember
@@ -12,12 +13,13 @@ import com.example.testapp.dal.entities.Todo
 
 
 //@TypeConverters(ColorConverter::class)
-@Database(entities = [(Todo::class), (Team::class), (TeamMember::class)], version = 3)
+@Database(entities = [(Todo::class), (Team::class), (TeamMember::class)], version = 5)
 abstract class ApplicationDatabase : RoomDatabase(){
 
 
     abstract fun TodoDao() : TodoDao
     abstract fun TeamDao() : TeamDao
+    abstract fun TeamMemberDao(): TeamMemberDao
 
     companion object {
 
