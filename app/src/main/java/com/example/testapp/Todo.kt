@@ -1,9 +1,11 @@
 package com.example.testapp.dal.entities
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import com.example.testapp.interfaces.IIdentifiable
 
 /*@Entity(tableName="todos")
@@ -22,17 +24,18 @@ data class Todo(
 data class Todo(
     @PrimaryKey(autoGenerate = true)
     override val id: Int = 0,
-    val txt:String,
-    val owner:Int? = null
+    var txt:String,
+    var owner:Int? = null
 ) : IIdentifiable
 
-
-
-/*data class GfgCourseNameWithPlaylists(
-    @Embedded val gfgCourseName: GfgCourseName,
+data class TodoAndOwner(
+    @Embedded
+    val todo:Todo,
     @Relation(
-        parentColumn = "gfgCourseNameId",
-        entityColumn = "gfgCourseNameCreatorId"
+        parentColumn = "owner",
+        entityColumn = "id"
     )
-    val playlists: List<Playlist>
-)*/
+    val owner:TeamMember?
+)
+
+data class TodoDTO(val txt:String, val color:Int, val owner:Int?)

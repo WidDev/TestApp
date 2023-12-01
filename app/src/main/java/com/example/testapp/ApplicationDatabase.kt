@@ -13,7 +13,7 @@ import com.example.testapp.dal.entities.Todo
 
 
 //@TypeConverters(ColorConverter::class)
-@Database(entities = [(Todo::class), (Team::class), (TeamMember::class)], version = 5)
+@Database(entities = [(Todo::class), (Team::class), (TeamMember::class)], version = 7)
 abstract class ApplicationDatabase : RoomDatabase(){
 
 

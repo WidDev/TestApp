@@ -28,6 +28,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.testapp.dal.entities.TeamMember
 import com.example.testapp.dal.entities.Todo
+import com.example.testapp.dal.entities.TodoAndOwner
 import com.example.testapp.shared.ColorPicker
 import com.example.testapp.shared.FloatingButton
 import com.example.testapp.shared.IdBasedPicklist
@@ -45,7 +46,7 @@ public fun TodosView(navHostController: NavHostController?,
     var showCreate by remember { mutableStateOf(false) }
     val allTodos by todosViewModel.allTodos.observeAsState(mutableListOf())
 
-
+    var selectedTodo:Todo? by remember {mutableStateOf(null)}
 
 
 
@@ -54,10 +55,15 @@ public fun TodosView(navHostController: NavHostController?,
 
         CreateDialog(visible = showCreate,
                     onDismiss = {showCreate = false },
-                    onOK = { name:String -> todosViewModel.insertTodo(Todo(txt = name)); showCreate = false},
-                    teamMembersList = teamMembersViewModel)
-        var list = allTodos.sortedByDescending { todo -> todo.id }.toMutableList()
-        ItemList(items = list, content = { RenderToDo(item = it) }, onDelete = {it -> todosViewModel.deleteTodo(it)})
+                    onOK = { todo:Todo -> todosViewModel.insertTodo(todo); showCreate = false},
+                    teamMembersList = teamMembersViewModel,
+                    todo = if(selectedTodo!=null) selectedTodo as Todo else Todo(txt=""))
+        var list = allTodos.sortedByDescending { todo -> todo.todo.id }.map({ it -> it.todo }).toMutableList()
+        ItemList(items = list,
+            content = { RenderToDo(item = it, items = allTodos) },
+            onDelete = {it -> todosViewModel.deleteTodo(it)},
+            onEdit = { it -> selectedTodo = it; showCreate = true }
+        )
 
     }
 
@@ -78,12 +84,13 @@ fun ActionsViewPreview()
 }*/
 
 @Composable
-fun RenderToDo(item: Todo)
+fun RenderToDo(item: Todo, items:List<TodoAndOwner>)
 {
+    val todoAndOwner:TodoAndOwner? = items.find( { t -> t.todo.id == item.id})
     Card(
         modifier = Modifier
-            .fillMaxWidth().
-            padding(5.dp)
+            .fillMaxWidth()
+            .padding(5.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -93,6 +100,11 @@ fun RenderToDo(item: Todo)
 //            {
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(text = "${item.txt} ${item.id}")
+                    if(todoAndOwner != null)
+                    {
+                        Text(text = "Owned by:${todoAndOwner.owner?.name} ")
+                    }
+
                     /*Icon(imageVector = Icons.Filled.Face, contentDescription = "", tint = item.owner.color)*/
                 }
 //            }
@@ -108,12 +120,13 @@ fun RenderToDo(item: Todo)
 @Composable
 fun CreateDialog(visible:Boolean = false,
                  onDismiss: () -> Unit = {},
-                 onOK:(str:String) -> Unit = {},
-                 teamMembersList:TeamMembersViewModel)
+                 onOK:(todo: Todo) -> Unit = {},
+                 teamMembersList:TeamMembersViewModel,
+                 todo:Todo = Todo(txt = ""))
 {
     var name by remember { mutableStateOf("") }
     var teamMember: TeamMember? by remember {mutableStateOf(null)}
-    var sel: Int by remember {mutableStateOf(Color.BLUE)}
+    var color: Int by remember {mutableStateOf(Color.BLUE)}
 
     if(visible)
     {
@@ -135,7 +148,7 @@ fun CreateDialog(visible:Boolean = false,
                        verticalArrangement = Arrangement.spacedBy(50.dp))
                 {
 
-    Text("Selected ${sel}")
+                    //Text("Selected ${sel}")
 
                     LabelledSegment(label = "Name", modifier = Modifier.fillMaxWidth())
                     {
@@ -154,14 +167,14 @@ fun CreateDialog(visible:Boolean = false,
                     LabelledSegment(label = "Color") {
                         Row(modifier = Modifier.width(40.dp))
                         {
-                            ColorPicker(selected = sel, onSelect = {
-                                sel = it
+                            ColorPicker(selected = color, onSelect = {
+                                color = it
                             })
                         }
 
                     }
 
-                    Button(onClick = {onOK(name)},
+                    Button(onClick = {todo.txt = name; onOK(todo)},
                         shape = MaterialTheme.shapes.small)
                     {
                         Text("Add")

@@ -1,6 +1,7 @@
 package com.example.testapp.shared
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,11 +38,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.testapp.dal.entities.TeamMember
 import com.example.testapp.interfaces.IIdentifiable
-
 import kotlin.random.Random
 
 @Composable
@@ -79,17 +80,18 @@ fun QuickAddRow(list:MutableList<TeamMember>, addItem:(item: TeamMember) -> Team
 fun <T:IIdentifiable> ItemList(items:MutableList<T>,
                                content:@Composable (T)->Unit,
                                modifier: Modifier = Modifier,
-                               onDelete:(T)->Unit = {})
+                               onDelete:(T)->Unit = {},
+                               onEdit:(T)->Unit = {})
 {
     LazyColumn (modifier = Modifier.fillMaxHeight())
     {
-        items(items, {it.id}) { item -> Item(item, items, content, onDelete) }
+        items(items, {it.id}) { item -> Item(item, items, content, onDelete, onEdit) }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T:IIdentifiable> Item(item: T, items:MutableList<T>, content:@Composable (T)->Unit, onDelete:(T) -> Unit)
+fun <T:IIdentifiable> Item(item: T, items:MutableList<T>, content:@Composable (T)->Unit, onDelete:(T) -> Unit, onEdit:(T) -> Unit)
 {
     val context = LocalContext.current
     var show by remember { mutableStateOf(true) }
@@ -102,18 +104,29 @@ fun <T:IIdentifiable> Item(item: T, items:MutableList<T>, content:@Composable (T
     }, positionalThreshold = { 150f } )
     SwipeToDismiss(state = state,
         background = { DismissBackground(dismissState = state) },
-        dismissContent = { ItemContent(item = item, content) },
+        dismissContent = { ItemContent(item = item, content, onEdit) },
         directions = setOf(DismissDirection.StartToEnd, DismissDirection.EndToStart))
 }
 
 @Composable
-fun <T> ItemContent(item: T, content:@Composable (T)->Unit)
+fun <T> ItemContent(item: T, content:@Composable (T)->Unit, onEdit:(T)->Unit)
 {
+    /*Surface(modifier = Modifier.combinedClickable(onLongClick = {}))
+    {
+
+    }
+*/
     Card(
         modifier = Modifier
             .padding(5.dp)
             .fillMaxWidth()
-    ) {
+            .pointerInput(Unit){
+                detectTapGestures(
+                    onLongPress = {
+                        onEdit(item)
+                    })
+            })
+    {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(8.dp)
@@ -121,6 +134,7 @@ fun <T> ItemContent(item: T, content:@Composable (T)->Unit)
             content(item)
         }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
