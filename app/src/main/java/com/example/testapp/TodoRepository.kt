@@ -42,6 +42,14 @@ class TodoRepository(private val dao: TodoDao){
         }
     }
 
+    fun upsert(item:Todo)
+    {
+        coroutineScope.launch(Dispatchers.IO)
+        {
+            dao.upsert(item)
+        }
+    }
+
     fun find(id:Int)
     {
         coroutineScope.launch(Dispatchers.IO)

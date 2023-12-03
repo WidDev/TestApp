@@ -30,6 +30,11 @@ class TodosViewModel(application: Application) : ViewModel() {
         repository.insert(todo)
     }
 
+    fun upsertTodo(todo:Todo)
+    {
+        repository.upsert(todo)
+    }
+
     fun findTodo(id:Int)
     {
         repository.find(id)
