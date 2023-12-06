@@ -24,9 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
+import com.example.testapp.dal.entities.TeamMember
 import com.example.testapp.dal.entities.Todo
 import com.example.testapp.dal.entities.TodoAndOwner
 import com.example.testapp.shared.FloatingButton
+import com.example.testapp.shared.IdBasedPicklist
 import com.example.testapp.shared.ItemList
 import com.example.testapp.shared.LabelledSegment
 import com.example.testapp.viewmodels.TeamMembersViewModel
@@ -134,6 +136,33 @@ fun CreateDialog(visible:Boolean = false,
                     {
                         TextField(value = updatedTodo.txt, onValueChange = { updatedTodo = updatedTodo.copy(txt = it) }, modifier = Modifier.fillMaxWidth())
                     }
+
+
+
+
+
+                    val teamMembers:List<TeamMember> = teamMembersList.allItems.observeAsState().value ?: listOf()
+                    val sel = teamMembers.find { o:TeamMember-> o.id == updatedTodo.owner}
+
+                    LabelledSegment(label = "Team Member") {
+                            IdBasedPicklist<TeamMember>(selected = sel,
+                                items = teamMembers,
+                                getLabel = { it -> it?.name ?: ""},
+                                onSelect = { it -> updatedTodo = updatedTodo.copy(owner = it.id)})
+                    }
+
+                    /*LabelledSegment(label = "Color") {
+                        Row(modifier = Modifier.width(40.dp))
+                        {
+                            ColorPicker(selected = updatedTodo.co, onSelect = {
+                                sel = it
+                                ColorPicker(selected = color, onSelect = {
+                                    color = it
+                                })
+                            }
+
+                        }
+                    }*/
 
 
                     Button(onClick = {onOK(updatedTodo)},
