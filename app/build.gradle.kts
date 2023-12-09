@@ -87,4 +87,6 @@ dependencies {
     ksp("androidx.room:room-compiler:2.5.2")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
+    /*implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")*/
 }

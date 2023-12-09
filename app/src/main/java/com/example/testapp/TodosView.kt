@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -33,6 +36,8 @@ import com.example.testapp.shared.ItemList
 import com.example.testapp.shared.LabelledSegment
 import com.example.testapp.viewmodels.TeamMembersViewModel
 import com.example.testapp.viewmodels.TodosViewModel
+import androidx.compose.ui.graphics.Color as JColor
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,22 +48,21 @@ public fun TodosView(navHostController: NavHostController?,
     var showCreate by remember { mutableStateOf(false) }
     val allTodos by todosViewModel.allTodos.observeAsState(mutableListOf())
 
-    var selectedTodo by remember { mutableStateOf<Todo?>(Todo(txt = "")) }
-    //var selectedTodo:Todo? by remember {mutableStateOf(null)}
+    var selectedItem by remember { mutableStateOf<Todo?>(Todo(txt = "")) }
 
 
     Column(modifier = Modifier.fillMaxWidth()) {
 
         CreateDialog(visible = showCreate,
                     onDismiss = {showCreate = false },
-                    onOK = { todosViewModel.upsertTodo(it); showCreate = false; selectedTodo = null},
+                    onOK = { if(it != null) todosViewModel.upsertTodo(it); showCreate = false; selectedItem = null},
                     teamMembersList = teamMembersViewModel,
-                    todo = selectedTodo)
+                    item = selectedItem)
         var list = allTodos.sortedByDescending { todo -> todo.todo.id }.map({ it -> it.todo }).toMutableList()
         ItemList(items = list,
             content = { RenderToDo(item = it, items = allTodos) },
             onDelete = {it -> todosViewModel.deleteTodo(it)},
-            onEdit = { it -> selectedTodo = it; showCreate = true }
+            onEdit = { it -> selectedItem = it; showCreate = true }
         )
 
     }
@@ -67,9 +71,7 @@ public fun TodosView(navHostController: NavHostController?,
     FloatingButton(text="Add") {
         showCreate = true
     }
-    /*FloatingButton(text="Clear", modifier = Modifier.padding(horizontal=70.dp)) {
-        todosViewModel.deleteAll()
-    }*/
+
 }
 
 /*@Preview(showBackground = true)
@@ -82,25 +84,28 @@ fun ActionsViewPreview()
 @Composable
 fun RenderToDo(item: Todo, items:List<TodoAndOwner>)
 {
+
     val todoAndOwner:TodoAndOwner? = items.find( { t -> t.todo.id == item.id})
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(5.dp)
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = "${item.txt} ${item.id}")
-                if(todoAndOwner != null)
-                {
-                    Text(text = "Owned by:${todoAndOwner.owner?.name} ")
-                }
-                /*Icon(imageVector = Icons.Filled.Face, contentDescription = "", tint = item.owner.color)*/
-           }
+    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp), horizontalArrangement =  Arrangement.SpaceBetween){
+
+        Column {
+            Text(text = "${item.txt}",
+                style = MaterialTheme.typography.titleMedium
+            )
         }
+        Column {
+            if(todoAndOwner?.owner != null)
+            {
+                var col = JColor(todoAndOwner.owner?.color ?: android.graphics.Color.DKGRAY)
+                Row{
+                    Text(text = "${todoAndOwner.owner?.name}")
+                    Icon(imageVector = Icons.Filled.Face, contentDescription = "", tint = col, modifier = Modifier.padding(horizontal = 5.dp))
+                }
+
+            }
+
+        }
+
     }
 }
 
@@ -108,9 +113,9 @@ fun RenderToDo(item: Todo, items:List<TodoAndOwner>)
 @Composable
 fun CreateDialog(visible:Boolean = false,
                  onDismiss: () -> Unit = {},
-                 onOK:(todo: Todo) -> Unit = {},
+                 onOK:(todo: Todo?) -> Unit = {},
                  teamMembersList:TeamMembersViewModel,
-                 todo:Todo? = Todo(txt = ""))
+                 item:Todo? = Todo(txt = ""))
 {
 
     if(visible)
@@ -119,7 +124,7 @@ fun CreateDialog(visible:Boolean = false,
                properties = DialogProperties(usePlatformDefaultWidth = false,dismissOnBackPress = true))
         {
 
-            var updatedTodo by remember { mutableStateOf(todo ?: Todo(txt = "")) }
+            var updatedItem by remember { mutableStateOf(item ?: Todo(txt = "")) }
 
             Card(modifier = Modifier
                 .fillMaxSize()
@@ -134,7 +139,7 @@ fun CreateDialog(visible:Boolean = false,
 
                     LabelledSegment(label = "Name", modifier = Modifier.fillMaxWidth())
                     {
-                        TextField(value = updatedTodo.txt, onValueChange = { updatedTodo = updatedTodo.copy(txt = it) }, modifier = Modifier.fillMaxWidth())
+                        TextField(value = updatedItem.txt, onValueChange = { updatedItem = updatedItem.copy(txt = it) }, modifier = Modifier.fillMaxWidth())
                     }
 
 
@@ -142,13 +147,13 @@ fun CreateDialog(visible:Boolean = false,
 
 
                     val teamMembers:List<TeamMember> = teamMembersList.allItems.observeAsState().value ?: listOf()
-                    val sel = teamMembers.find { o:TeamMember-> o.id == updatedTodo.owner}
+                    val sel = teamMembers.find { o:TeamMember-> o.id == updatedItem.owner}
 
                     LabelledSegment(label = "Team Member") {
                             IdBasedPicklist<TeamMember>(selected = sel,
                                 items = teamMembers,
                                 getLabel = { it -> it?.name ?: ""},
-                                onSelect = { it -> updatedTodo = updatedTodo.copy(owner = it.id)})
+                                onSelect = { it -> updatedItem = updatedItem.copy(owner = it.id)})
                     }
 
                     /*LabelledSegment(label = "Color") {
@@ -164,12 +169,19 @@ fun CreateDialog(visible:Boolean = false,
                         }
                     }*/
 
-
-                    Button(onClick = {onOK(updatedTodo)},
-                        shape = MaterialTheme.shapes.small)
-                    {
-                        Text("Add")
+                    Row {
+                        Button(onClick = {onOK(updatedItem)},
+                            shape = MaterialTheme.shapes.small)
+                        {
+                            Text("Ok")
+                        }
+                        Button(onClick = {onOK(null)},
+                            shape = MaterialTheme.shapes.small)
+                        {
+                            Text("Cancel")
+                        }
                     }
+
 
                 }
 

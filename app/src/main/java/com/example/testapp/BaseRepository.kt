@@ -25,6 +25,14 @@ open class BaseRepository<T:IIdentifiable>(private val dao: BaseDao<T>) {
         }
     }
 
+    fun upsert(item:T)
+    {
+        coroutineScope.launch(Dispatchers.IO)
+        {
+            dao.upsert(item)
+        }
+    }
+
     fun delete(item:T)
     {
         coroutineScope.launch(Dispatchers.IO)

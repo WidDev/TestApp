@@ -3,7 +3,6 @@ package com.example.testapp.dal.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Upsert
 import com.example.testapp.dal.BaseDao
 import com.example.testapp.dal.entities.Todo
 import com.example.testapp.dal.entities.TodoAndOwner
@@ -27,7 +26,5 @@ interface TodoDao : BaseDao<Todo> {
     @Query("SELECT * FROM todos order by id asc")
     fun getAllWithOwner() : LiveData<List<TodoAndOwner>>
 
-    @Upsert
-    fun upsert(item:Todo)
 
 }

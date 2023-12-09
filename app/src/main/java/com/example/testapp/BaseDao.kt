@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Update
+import androidx.room.Upsert
 import com.example.testapp.interfaces.IIdentifiable
 
 interface BaseDao<T:IIdentifiable> {
@@ -13,6 +14,9 @@ interface BaseDao<T:IIdentifiable> {
 
     @Insert
     fun insert(entities: List<T>)
+
+    @Upsert
+    fun upsert(entity:T)
 
     @Update
     fun update(entity: T)

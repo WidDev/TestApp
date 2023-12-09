@@ -28,6 +28,11 @@ class TeamMembersViewModel(application: Application) : ViewModel() {
         repository.insert(item)
     }
 
+    fun upsert(item:TeamMember)
+    {
+        repository.upsert(item)
+    }
+
     fun find(id:Int)
     {
         repository.find(id)

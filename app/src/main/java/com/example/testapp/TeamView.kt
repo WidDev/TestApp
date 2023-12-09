@@ -1,6 +1,5 @@
 package com.example.testapp.views
 
-import android.graphics.Color
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,9 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,6 +34,7 @@ import com.example.testapp.shared.FloatingButton
 import com.example.testapp.shared.ItemList
 import com.example.testapp.shared.LabelledSegment
 import com.example.testapp.viewmodels.TeamsViewModel
+import androidx.compose.ui.graphics.Color as JColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,15 +43,21 @@ public fun TeamView(navHostController:NavHostController, teamsViewModel: TeamsVi
 
     var showCreate by remember { mutableStateOf(false) }
     val allItems by teamsViewModel.allItems.observeAsState(mutableListOf())
+    var selectedItem by remember { mutableStateOf<Team?>(Team()) }
+
 
     Column {
 
         CreateTeamDialog(visible = showCreate,
             onDismiss = {showCreate = false },
-            onOK = { name:String -> teamsViewModel.insert(Team(name = name, color = Color.BLUE)); showCreate = false})
+            onOK = { if(it != null) teamsViewModel.upsert(it) ; showCreate = false; selectedItem = null},
+            item = selectedItem)
 
         var list = allItems.sortedByDescending { item -> item.id }.toMutableList()
-        ItemList(items = list, content = { RenderTeam(item = it) }, onDelete = {it -> teamsViewModel.delete(it)})
+        ItemList(items = list,
+                 content = { RenderTeam(item = it) },
+                 onDelete = {it -> teamsViewModel.delete(it)},
+                 onEdit = { it -> selectedItem = it; showCreate = true })
     }
 
     FloatingButton(text="Add") {
@@ -61,21 +70,30 @@ public fun TeamView(navHostController:NavHostController, teamsViewModel: TeamsVi
 @Composable
 fun RenderTeam(item: Team)
 {
-    Text(
-        text = "Team Member",
-        style = MaterialTheme.typography.titleMedium
-    )
-    Text(text = "${item.name} ${item.id}")
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement =  Arrangement.SpaceBetween){
+        
+        Column {
+            Text(
+                text = "Team",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(text = "${item.name}")
+        }
+        Column {
+            var col = JColor(item.color)
+            Icon(imageVector = Icons.Filled.Face, contentDescription = "", tint = col)
+        }
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTeamDialog(visible:Boolean = false,
                  onDismiss: () -> Unit = {},
-                 onOK:(str:String) -> Unit = {})
+                 onOK:(item:Team?) -> Unit = {},
+                 item:Team? = Team())
 {
-    var name by remember { mutableStateOf("") }
-    var sel: Int by remember {mutableStateOf(Color.BLUE)}
 
     if(visible)
     {
@@ -86,6 +104,9 @@ fun CreateTeamDialog(visible:Boolean = false,
             )
         )
         {
+
+            var updatedItem by remember { mutableStateOf(item ?: Team()) }
+
             Card(modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp),
@@ -97,27 +118,32 @@ fun CreateTeamDialog(visible:Boolean = false,
                     verticalArrangement = Arrangement.spacedBy(50.dp))
                 {
 
-                    Text("Selected ${sel}")
-
                     LabelledSegment(label = "Name", modifier = Modifier.fillMaxWidth())
                     {
-                        TextField(value = name, onValueChange = { name = it }, modifier = Modifier.fillMaxWidth())
+                        TextField(value = updatedItem.name, onValueChange = { updatedItem = updatedItem.copy(name = it) }, modifier = Modifier.fillMaxWidth())
                     }
 
                     LabelledSegment(label = "Color") {
                         Row(modifier = Modifier.width(40.dp))
                         {
-                            ColorPicker(selected = sel, onSelect = {
-                                sel = it
+                            ColorPicker(selected = updatedItem.color, onSelect = {
+                                updatedItem = updatedItem.copy(color = it)
                             })
                         }
 
                     }
 
-                    Button(onClick = {onOK(name)},
-                        shape = MaterialTheme.shapes.small)
-                    {
-                        Text("Add")
+                    Row {
+                        Button(onClick = {onOK(updatedItem)},
+                            shape = MaterialTheme.shapes.small)
+                        {
+                            Text("Ok")
+                        }
+                        Button(onClick = {onOK(null)},
+                            shape = MaterialTheme.shapes.small)
+                        {
+                            Text("Cancel")
+                        }
                     }
 
                 }
