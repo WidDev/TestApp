@@ -26,5 +26,7 @@ interface TodoDao : BaseDao<Todo> {
     @Query("SELECT * FROM todos order by id asc")
     fun getAllWithOwner() : LiveData<List<TodoAndOwner>>
 
+    @Query("select id from todos order by id desc limit 1")
+    fun getHighestId(): Int
 
 }

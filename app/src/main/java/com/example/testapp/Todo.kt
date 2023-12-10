@@ -7,6 +7,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.example.testapp.interfaces.IIdentifiable
+import com.example.testapp.interfaces.IOrderable
 
 /*@Entity(tableName="todos")
 data class Todo(
@@ -25,8 +26,9 @@ data class Todo(
     @PrimaryKey(autoGenerate = true)
     override val id: Int = 0,
     var txt:String,
-    var owner:Int? = null
-) : IIdentifiable
+    var owner:Int? = null,
+    override var order:Int = 0
+) : IIdentifiable, IOrderable
 
 data class TodoAndOwner(
     @Embedded

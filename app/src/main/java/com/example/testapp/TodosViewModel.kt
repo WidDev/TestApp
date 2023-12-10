@@ -55,5 +55,10 @@ class TodosViewModel(application: Application) : ViewModel() {
         repository.update(item)
     }
 
+    fun reorder(from:Int, to:Int)
+    {
+        /*Collections.swap(allTodos, from, to)*/
+    }
+
 
 }
