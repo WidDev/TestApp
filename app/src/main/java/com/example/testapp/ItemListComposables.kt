@@ -12,22 +12,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismiss
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,40 +35,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.testapp.dal.entities.TeamMember
 import com.example.testapp.interfaces.IIdentifiable
-import kotlin.random.Random
 
-@Composable
-fun QuickAddRow(list:MutableList<TeamMember>, addItem:(item: TeamMember) -> TeamMember)
-{
-    var txt by remember { mutableStateOf("") }
-
-    Row(modifier = Modifier.fillMaxWidth())
-    {
-
-        TextField(shape = RoundedCornerShape(2.dp),
-            trailingIcon = {
-                Button(shape = MaterialTheme.shapes.small, onClick = {
-                    if(txt != "")
-                    {
-                        var item = TeamMember(Random.nextInt(), name=txt)
-                        addItem(item)
-                        txt = ""
-                    }
-
-                }) {
-                    Text(text = "Add Action")
-                }
-            },
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor =  Color.LightGray, //hide the indicator
-                unfocusedIndicatorColor = Color.Transparent),
-            value = txt,
-            onValueChange = { txt = it})
-    }
-
-}
 
 @Composable
 fun <T:IIdentifiable> ItemList(items:MutableList<T>,
@@ -83,6 +45,7 @@ fun <T:IIdentifiable> ItemList(items:MutableList<T>,
                                onDelete:(T)->Unit = {},
                                onEdit:(T)->Unit = {})
 {
+
     LazyColumn (modifier = Modifier.fillMaxHeight())
     {
         items(items, {it.id}) { item -> Item(item, items, content, onDelete, onEdit) }
@@ -111,11 +74,6 @@ fun <T:IIdentifiable> Item(item: T, items:MutableList<T>, content:@Composable (T
 @Composable
 fun <T> ItemContent(item: T, content:@Composable (T)->Unit, onEdit:(T)->Unit)
 {
-    /*Surface(modifier = Modifier.combinedClickable(onLongClick = {}))
-    {
-
-    }
-*/
     Card(
         modifier = Modifier
             .padding(5.dp)
