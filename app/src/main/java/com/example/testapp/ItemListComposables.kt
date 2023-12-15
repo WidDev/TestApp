@@ -1,7 +1,7 @@
 package com.example.testapp.shared
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,7 +22,6 @@ import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismiss
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,16 +31,11 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.testapp.interfaces.IIdentifiable
-import org.burnoutcrew.reorderable.ItemPosition
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
-import org.burnoutcrew.reorderable.rememberReorderableLazyListState
-import org.burnoutcrew.reorderable.reorderable
 
 
 @Composable
@@ -50,40 +43,14 @@ fun <T:IIdentifiable> ItemList(items:MutableList<T>,
                                content:@Composable (T)->Unit,
                                modifier: Modifier = Modifier,
                                onDelete:(T)->Unit = {},
-                               onEdit:(T)->Unit = {},
-                               onReorder:(ItemPosition, ItemPosition)->Unit = { itemPosition: ItemPosition, itemPosition1: ItemPosition -> })
+                               onEdit:(T)->Unit = {})
 {
-    /*data.value = data.value.toMutableList().apply {
-        add(to.index, removeAt(from.index))
-    }*/
-    val state = rememberReorderableLazyListState(onMove = { from, to ->
-        println("from:${from.index}  to:${to.index}")
-        onReorder(from, to)
-    })
 
-    LazyColumn (state = state.listState,
-                modifier = Modifier.reorderable(state)
-                    .detectReorderAfterLongPress(state))
+    LazyColumn (modifier = Modifier.fillMaxHeight())
     {
         items(items, {it.id}) { item ->
 
-            ReorderableItem(state, key = { t:T -> t.id }) { isDragging ->
-                val elevation = animateDpAsState(if (isDragging) 16.dp else 0.dp)
-                Column(
-                    modifier = Modifier
-                        .shadow(elevation.value)
-                        .background(Color.Red)
-                ) {
-                    /*Item(item, items, content, onDelete, onEdit)*/
-                    Row(modifier = Modifier.fillMaxWidth().height(20.dp))
-                    {
-                        Text("Item:${item.id}")
-                    }
-                }
-
-            }
-
-
+            Item(item, items, content, onDelete, onEdit)
         }
     }
 }
@@ -113,13 +80,13 @@ fun <T> ItemContent(item: T, content:@Composable (T)->Unit, onEdit:(T)->Unit)
     Card(
         modifier = Modifier
             .padding(5.dp)
-            .fillMaxWidth()/*
+            .fillMaxWidth()
             .pointerInput(Unit){
                 detectTapGestures(
-                    onLongPress = {
+                    onDoubleTap = {
                         onEdit(item)
                     })
-            }*/)
+            })
     {
         Column(
             verticalArrangement = Arrangement.Center,

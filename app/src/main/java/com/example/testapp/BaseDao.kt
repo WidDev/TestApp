@@ -16,7 +16,7 @@ interface BaseDao<T:IIdentifiable> {
     fun insert(entities: List<T>)
 
     @Upsert
-    fun upsert(entity:T)
+    fun upsert(entity:T): Long
 
     @Update
     fun update(entity: T)
@@ -35,5 +35,6 @@ interface BaseDao<T:IIdentifiable> {
     fun getAll() : LiveData<List<T>>
 
     fun find(id:Int) : List<T>
+
 
 }

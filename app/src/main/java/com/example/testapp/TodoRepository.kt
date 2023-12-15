@@ -11,47 +11,59 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class TodoRepository(private val dao: TodoDao){
+class TodoRepository(private val dao: TodoDao) {
 
     val allItems: LiveData<List<TodoAndOwner>> = dao.getAllWithOwner()
     val searchResults = MutableLiveData<List<TodoAndOwner>>()
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    fun insert(item:Todo)
-    {
+    fun insert(item: Todo) {
         coroutineScope.launch(Dispatchers.IO)
         {
+            dao.moveAllUpFrom(1)
+            item.order = 1
             dao.insert(item)
         }
     }
 
-    fun delete(item:Todo)
-    {
+    fun delete(item: Todo) {
         coroutineScope.launch(Dispatchers.IO)
         {
             dao.delete(item)
+            dao.moveAllDownFrom(item.order)
         }
     }
 
-    fun update(item:Todo)
-    {
+    fun update(item: Todo) {
         coroutineScope.launch(Dispatchers.IO)
         {
             dao.update(item)
         }
     }
 
-    fun upsert(item:Todo)
-    {
+    fun upsert(item: Todo) {
         coroutineScope.launch(Dispatchers.IO)
         {
-            dao.upsert(item)
+
+            var existing = dao.itemExists(item.id)
+            if(!existing)
+            {
+                dao.moveAllUpFrom(0)
+                item.order = 0
+                dao.insert(item)
+
+            }
+            else
+            {
+                dao.update(item)
+            }
+
+
         }
     }
 
-    fun find(id:Int)
-    {
+    fun find(id: Int) {
         coroutineScope.launch(Dispatchers.IO)
         {
             searchResults.value = asyncFind(id).await()
@@ -68,6 +80,17 @@ class TodoRepository(private val dao: TodoDao){
         coroutineScope.launch(Dispatchers.IO)
         {
             dao.deleteAll()
+        }
+    }
+
+    fun updateOrder(from:Int, to:Int)
+    {
+        coroutineScope.launch(Dispatchers.IO)
+        {
+            val id = dao.getIdByOrder(from)
+            dao.moveAllDownFrom(from)
+            dao.moveAllUpFrom(to)
+            dao.updateOrder(id, to)
         }
     }
 

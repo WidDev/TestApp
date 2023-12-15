@@ -57,7 +57,19 @@ class TodosViewModel(application: Application) : ViewModel() {
 
     fun reorder(from:Int, to:Int)
     {
-        /*Collections.swap(allTodos, from, to)*/
+
+    }
+
+    fun reorderItems(from: Int, to: Int) {
+
+
+        /*var fromItem = allTodos.value?.find { item -> item.todo.order == from.index}
+        var toItem = allTodos.value?.find{item -> item.todo.order == to.index}
+
+        if(fromItem == null || toItem == null) return*/
+
+        repository.updateOrder(from, to)
+
     }
 
 

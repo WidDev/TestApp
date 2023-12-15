@@ -27,7 +27,7 @@ data class Todo(
     override val id: Int = 0,
     var txt:String,
     var owner:Int? = null,
-    override var order:Int = 0
+    override var order:Int = -1
 ) : IIdentifiable, IOrderable
 
 data class TodoAndOwner(
